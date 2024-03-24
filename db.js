@@ -9,10 +9,7 @@ const mysqlPool = mysql.createPool({
 
 mysqlPool
   .query("SELECT 1")
-  .then((data) => {
-    console.log(data);
-  })
-  .catch(console.log("error"))
-  .then(() => mysqlPool.end());
+  .then(() => console.log("success"))
+  .catch((err) => console.log("err"));
 
 module.exports = mysqlPool;
