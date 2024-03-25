@@ -8,6 +8,11 @@ router.post("/", async (req, res) => {
   res.send(data);
 });
 
+router.post("/getAllByCurrentDate", async (req, res) => {
+  const data = await service.getAllHistoryByCurrentDate(req.body);
+  res.send(data);
+});
+
 router.get("/:id", async (req, res) => {
   const data = await service.getHistoryById(req.params.id);
   if (data == undefined)
@@ -22,7 +27,7 @@ router.delete("/:id", async (req, res) => {
   else res.send("Deleted successfully.");
 });
 
-router.post("/", async (req, res) => {
+router.post("/create", async (req, res) => {
   await service.AddAHistory(req.body);
   res.status(201).send("Created successfully.");
 });

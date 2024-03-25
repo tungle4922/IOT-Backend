@@ -7,6 +7,14 @@ module.exports.getAllHistory = async (obj) => {
   return records;
 };
 
+module.exports.getAllHistoryByCurrentDate = async (obj) => {
+  const offset = (obj.page - 1) * obj.pageSize;
+  const sql =
+    "SELECT * FROM iot_exam.history WHERE DATE(createdDate) = CURDATE() LIMIT ? OFFSET ?";
+  const [records] = await db.query(sql, [obj.pageSize, offset]);
+  return records;
+};
+
 module.exports.getHistoryById = async (id) => {
   const [[record]] = await db.query(
     "SELECT * FROM iot_exam.history WHERE id = ?",

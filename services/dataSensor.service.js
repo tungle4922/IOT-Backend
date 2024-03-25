@@ -15,11 +15,19 @@ module.exports.sortDataSensorHighToLow = async (obj) => {
 };
 
 module.exports.sortDataSensorLowToHigh = async (obj) => {
-    const offset = (obj.page - 1) * obj.pageSize;
-    const sql = `SELECT * FROM iot_exam.datasensors ORDER BY ${obj.fieldName} ASC LIMIT ? OFFSET ?`;
-    const [records] = await db.query(sql, [obj.pageSize, offset]);
-    return records;
-  };
+  const offset = (obj.page - 1) * obj.pageSize;
+  const sql = `SELECT * FROM iot_exam.datasensors ORDER BY ${obj.fieldName} ASC LIMIT ? OFFSET ?`;
+  const [records] = await db.query(sql, [obj.pageSize, offset]);
+  return records;
+};
+
+module.exports.getAllDataSensorByCurrentDate = async (obj) => {
+  const offset = (obj.page - 1) * obj.pageSize;
+  const sql =
+    "SELECT * FROM iot_exam.datasensors WHERE DATE(createdDate) = CURDATE() LIMIT ? OFFSET ?";
+  const [records] = await db.query(sql, [obj.pageSize, offset]);
+  return records;
+};
 
 module.exports.getDataSensorById = async (id) => {
   const [[record]] = await db.query(
