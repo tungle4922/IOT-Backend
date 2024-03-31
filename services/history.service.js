@@ -1,10 +1,32 @@
 const db = require("../db");
 
 module.exports.getAllHistory = async (obj) => {
-  const offset = (obj.page - 1) * obj.pageSize;
-  const sql = "SELECT * FROM iot_exam.history LIMIT ? OFFSET ?";
-  const [records] = await db.query(sql, [obj.pageSize, offset]);
-  return records;
+  let sqlParams = [];
+  let sqlCondition = "";
+  // Tìm theo temperature
+  if (obj.device !== undefined && obj.device !== null) {
+    sqlCondition += " AND device = ?";
+    sqlParams.push(obj.device);
+  }
+  // Tìm theo temperature
+  if (obj.action !== undefined && obj.action !== null) {
+    sqlCondition += " AND action = ?";
+    sqlParams.push(obj.action);
+  }
+  // Lấy tổng số lượng bản ghi
+  const totalCountSql = `SELECT COUNT(*) as totalCount FROM iot_exam.history WHERE 1=1 ${sqlCondition}`;
+  const [totalCountResult] = await db.query(totalCountSql, sqlParams);
+  const totalCount = totalCountResult[0].totalCount;
+  // Lấy dữ liệu
+  const sql = `SELECT * FROM iot_exam.history WHERE 1=1 ${sqlCondition} LIMIT ? OFFSET ?`;
+  const [data] = await db.query(sql, [
+    ...sqlParams,
+    obj.pageSize,
+    (obj.page - 1) * obj.pageSize,
+  ]);
+  console.log(sqlParams);
+
+  return { data, totalCount };
 };
 
 module.exports.getAllHistoryByCurrentDate = async (obj) => {
