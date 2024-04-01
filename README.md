@@ -1,3 +1,13 @@
+1) Cài node JS
+
+  Cài các thư viện bằng npm i
+  ![image](https://github.com/tungle4922/IOT-Backend/assets/113108918/e284e618-c277-47b9-a509-471c09776371)
+3) Tạo database
+   Bảng DataSensor
+   ![image](https://github.com/tungle4922/IOT-Backend/assets/113108918/b9980d2f-5f0f-43a2-b8fe-c546e85a0442)
+   Bảng history
+   ![image](https://github.com/tungle4922/IOT-Backend/assets/113108918/b49c113e-9fe1-47c7-80a2-f38860438966)
+4) show Api
 Api get all and search datasensor
 ![image](https://github.com/tungle4922/IOT-Backend/assets/113108918/38591ed3-f72a-4a83-b42e-0c0ba0a8623d)
 Api get all by id
