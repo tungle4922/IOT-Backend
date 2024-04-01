@@ -23,6 +23,17 @@ module.exports.getAllDataSensor = async (obj) => {
     sqlCondition += " AND light = ?";
     sqlParams.push(obj.light);
   }
+  // Tìm theo ngày tạo
+  if (obj.createdDate !== undefined && obj.createdDate !== null) {
+    sqlCondition += " AND createdDate >= ? AND createdDate <= ?";
+    sqlParams.push(obj.createdDate + " 00:00:00");
+    sqlParams.push(obj.createdDate + " 23:59:59");
+  }
+  //search
+  if (obj.type !== undefined && obj.type !== null && obj.type !== "all") {
+    sqlCondition += ` AND ${obj.type} = ?`;
+    sqlParams.push(obj.search);
+  }
   // Lấy tổng số lượng bản ghi
   const totalCountSql = `SELECT COUNT(*) as totalCount FROM iot_exam.datasensors WHERE 1=1 ${sqlCondition}`;
   const [totalCountResult] = await db.query(totalCountSql, sqlParams);
@@ -35,6 +46,7 @@ module.exports.getAllDataSensor = async (obj) => {
     (obj.page - 1) * obj.pageSize,
   ]);
   console.log(sqlParams);
+  console.log(sql);
 
   return { data, totalCount };
 };
