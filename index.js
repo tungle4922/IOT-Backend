@@ -2,12 +2,14 @@ const express = require("express"),
   app = express(),
   bodyparser = require("body-parser");
 require("express-async-errors");
+const cors = require("cors");
 
 const db = require("./db"),
   dataSensorRoutes = require("./controllers/dataSensor.controller"),
   historyRoutes = require("./controllers/history.controller");
 
 //middleware
+app.use(cors());
 app.use(bodyparser.json());
 app.use("/api/dataSensor", dataSensorRoutes);
 app.use("/api/history", historyRoutes);
