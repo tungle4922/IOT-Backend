@@ -4,12 +4,12 @@ module.exports.getAllHistory = async (obj) => {
   let sqlParams = [];
   let sqlCondition = "";
   // Tìm theo temperature
-  if (obj.device !== undefined && obj.device !== null) {
+  if (obj.device !== undefined && obj.device !== null && obj.device !== "") {
     sqlCondition += " AND device = ?";
     sqlParams.push(obj.device);
   }
   // Tìm theo temperature
-  if (obj.action !== undefined && obj.action !== null) {
+  if (obj.action !== undefined && obj.action !== null && obj.action !== "") {
     sqlCondition += " AND action = ?";
     sqlParams.push(obj.action);
   }

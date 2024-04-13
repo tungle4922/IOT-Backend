@@ -4,22 +4,34 @@ module.exports.getAllDataSensor = async (obj) => {
   let sqlParams = [];
   let sqlCondition = "";
   // Tìm theo temperature
-  if (obj.temperature !== undefined && obj.temperature !== null) {
+  if (
+    obj.temperature !== undefined &&
+    obj.temperature !== null &&
+    obj.temperature !== ""
+  ) {
     sqlCondition += " AND temperature = ?";
     sqlParams.push(obj.temperature);
   }
   // Tìm theo humidity
-  if (obj.humidity !== undefined && obj.humidity !== null) {
+  if (
+    obj.humidity !== undefined &&
+    obj.humidity !== null &&
+    obj.humidity !== ""
+  ) {
     sqlCondition += " AND humidity = ?";
     sqlParams.push(obj.humidity);
   }
   // Tìm theo humidity
-  if (obj.humidity !== undefined && obj.humidity !== null) {
+  if (
+    obj.humidity !== undefined &&
+    obj.humidity !== null &&
+    obj.humidity !== ""
+  ) {
     sqlCondition += " AND humidity = ?";
     sqlParams.push(obj.humidity);
   }
   // Tìm theo light
-  if (obj.light !== undefined && obj.light !== null) {
+  if (obj.light !== undefined && obj.light !== null && obj.light !== "") {
     sqlCondition += " AND light = ?";
     sqlParams.push(obj.light);
   }
