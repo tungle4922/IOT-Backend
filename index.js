@@ -4,15 +4,19 @@ const express = require("express"),
 require("express-async-errors");
 const cors = require("cors");
 
-const db = require("./db"),
-  dataSensorRoutes = require("./controllers/dataSensor.controller"),
-  historyRoutes = require("./controllers/history.controller");
+const db = require("./db");
+const dataSensorRoutes = require("./controllers/dataSensor.controller");
+const historyRoutes = require("./controllers/history.controller");
+const subscriberRoutes = require("./controllers/subscriber.controller");
+const publisherRoutes = require("./controllers/publisher.controller");
 
 //middleware
 app.use(cors());
 app.use(bodyparser.json());
 app.use("/api/dataSensor", dataSensorRoutes);
 app.use("/api/history", historyRoutes);
+app.use("/subscriber", subscriberRoutes);
+app.use("/publisher", publisherRoutes);
 
 app.use((err, req, res, next) => {
   console.log(err);
