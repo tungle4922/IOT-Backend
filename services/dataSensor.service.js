@@ -37,9 +37,13 @@ module.exports.getAllDataSensor = async (obj) => {
   }
   // Tìm theo ngày tạo
   if (obj.createdDate !== undefined && obj.createdDate !== null) {
-    sqlCondition += " AND createdDate >= ? AND createdDate <= ?";
-    sqlParams.push(obj.createdDate + " 00:00:00");
-    sqlParams.push(obj.createdDate + " 23:59:59");
+    const startDate = new Date(obj.createdDate);
+    startDate.setUTCHours(0, 0, 0, 0);
+    const endDate = new Date(obj.createdDate);
+    endDate.setUTCHours(23, 59, 59, 59);
+    sqlCondition += " AND createdDate >= ? AND createdDate < ?";
+    sqlParams.push(startDate.toISOString());
+    sqlParams.push(endDate.toISOString());
   }
   //search
   if (obj.type !== undefined && obj.type !== null && obj.type !== "all") {
@@ -58,7 +62,6 @@ module.exports.getAllDataSensor = async (obj) => {
     (obj.page - 1) * obj.pageSize,
   ]);
   console.log(sqlParams);
-  console.log(sql);
 
   return { data, totalCount };
 };

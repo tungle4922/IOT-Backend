@@ -15,9 +15,13 @@ module.exports.getAllHistory = async (obj) => {
   }
   // Tìm theo ngày tạo
   if (obj.createdDate !== undefined && obj.createdDate !== null) {
-    sqlCondition += " AND createdDate >= ? AND createdDate <= ?";
-    sqlParams.push(obj.createdDate + " 00:00:00");
-    sqlParams.push(obj.createdDate + " 23:59:59");
+    const startDate = new Date(obj.createdDate);
+    startDate.setUTCHours(0, 0, 0, 0);
+    const endDate = new Date(obj.createdDate);
+    endDate.setUTCHours(23, 59, 59, 59);
+    sqlCondition += " AND createdDate >= ? AND createdDate < ?";
+    sqlParams.push(startDate.toISOString());
+    sqlParams.push(endDate.toISOString());
   }
   // Lấy tổng số lượng bản ghi
   const totalCountSql = `SELECT COUNT(*) as totalCount FROM iot_exam.history WHERE 1=1 ${sqlCondition}`;
