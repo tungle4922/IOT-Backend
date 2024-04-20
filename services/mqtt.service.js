@@ -1,5 +1,6 @@
 const mqtt = require("mqtt");
 const dataSensorService = require("./dataSensor.service");
+const historyService = require("./history.service");
 
 class MQTTService {
   constructor(host, username, password, messageCallback) {
@@ -29,21 +30,29 @@ class MQTTService {
 
     // Call the message callback function when message arrived
     this.mqttClient.on("message", function (topic, message) {
-      console.log(message.toString());
-      const messArr = message
-        .toString()
-        .split(",")
-        .map((item) => parseInt(item.trim()));
-      console.log("test", messArr[0], messArr[1], messArr[2]);
-      const temp = messArr[0];
-      const hum = messArr[1];
-      const light = messArr[2];
-      const body = {
-        temp: temp,
-        hum: hum,
-        light: light,
-      };
-      dataSensorService.AddADataSensor(body);
+      if (topic === "device/control") {
+        const messArr = message
+          .toString()
+          .split(",")
+          .map((item) => parseInt(item.trim()));
+        console.log("test", messArr[0], messArr[1], messArr[2]);
+        const temp = messArr[0];
+        const hum = messArr[1];
+        const light = messArr[2];
+        const body = {
+          temp: temp,
+          hum: hum,
+          light: light,
+        };
+        dataSensorService.AddADataSensor(body);
+      }
+      if (topic === "led/history") {
+        const body = {
+          device: "esp8266",
+          action: message.toString(),
+        };
+        historyService.AddAHistory(body);
+      }
       if (this.messageCallback) this.messageCallback(topic, message);
     });
 

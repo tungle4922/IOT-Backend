@@ -28,7 +28,7 @@ module.exports.getAllHistory = async (obj) => {
   const [totalCountResult] = await db.query(totalCountSql, sqlParams);
   const totalCount = totalCountResult[0].totalCount;
   // Lấy dữ liệu
-  const sql = `SELECT * FROM iot_exam.history WHERE 1=1 ${sqlCondition} LIMIT ? OFFSET ?`;
+  const sql = `SELECT * FROM iot_exam.history WHERE 1=1 ${sqlCondition} ORDER BY 1 DESC LIMIT ? OFFSET ?`;
   const [data] = await db.query(sql, [
     ...sqlParams,
     obj.pageSize,
