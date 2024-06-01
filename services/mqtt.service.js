@@ -35,20 +35,29 @@ class MQTTService {
           .toString()
           .split(",")
           .map((item) => parseInt(item.trim()));
-        console.log("test", messArr[0], messArr[1], messArr[2]);
+        console.log("test", messArr[0], messArr[1], messArr[2], messArr[3]);
         const temp = messArr[0];
         const hum = messArr[1];
         const light = messArr[2];
+        const wind = messArr[3];
         const body = {
           temp: temp,
           hum: hum,
           light: light,
+          wind: wind,
         };
         dataSensorService.AddADataSensor(body);
       }
       if (topic === "led/history") {
         const body = {
-          device: "esp8266",
+          device: "led",
+          action: message.toString(),
+        };
+        historyService.AddAHistory(body);
+      }
+      if (topic === "fan/history") {
+        const body = {
+          device: "fan",
           action: message.toString(),
         };
         historyService.AddAHistory(body);

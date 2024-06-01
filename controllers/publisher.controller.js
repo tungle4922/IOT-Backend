@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 // Change this to point to your MQTT broker
-const MQTT_HOST_NAME = "mqtt://192.168.1.8:1888";
+const MQTT_HOST_NAME = "mqtt://192.168.254.173:1888";
 const USERNAME = "admin1";
 const PASSWORD = "1234";
 

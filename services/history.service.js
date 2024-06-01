@@ -3,15 +3,20 @@ const db = require("../db");
 module.exports.getAllHistory = async (obj) => {
   let sqlParams = [];
   let sqlCondition = "";
-  // Tìm theo temperature
+  // Tìm theo thiết bị
   if (obj.device !== undefined && obj.device !== null && obj.device !== "") {
     sqlCondition += " AND device = ?";
     sqlParams.push(obj.device);
   }
-  // Tìm theo temperature
+  // Tìm theo hành động
   if (obj.action !== undefined && obj.action !== null && obj.action !== "") {
-    sqlCondition += " AND action = ?";
-    sqlParams.push(obj.action);
+    sqlCondition += " AND action LIKE ?";
+    sqlParams.push(`%${obj.action}%`);
+  }
+  // Tìm theo id
+  if (obj.id !== undefined && obj.id !== null && obj.id !== "") {
+    sqlCondition += " AND id = ?";
+    sqlParams.push(obj.id);
   }
   // Tìm theo ngày tạo
   if (obj.createdDate !== undefined && obj.createdDate !== null) {
@@ -22,6 +27,19 @@ module.exports.getAllHistory = async (obj) => {
     sqlCondition += " AND createdDate >= ? AND createdDate < ?";
     sqlParams.push(startDate.toISOString());
     sqlParams.push(endDate.toISOString());
+  }
+  // Tìm kiếm trong tất cả các cột
+  if (obj.search !== undefined && obj.search !== null && obj.search !== "") {
+    const searchTerms = obj.search.split(" ");
+    const searchConditions = searchTerms.map((term) => {
+      return `action LIKE ? OR createdDate LIKE ? OR id LIKE ?`;
+    });
+    sqlCondition += " AND (" + searchConditions.join(" OR ") + ")";
+    searchTerms.forEach((term) => {
+      sqlParams.push("%" + term + "%");
+      sqlParams.push("%" + term + "%");
+      sqlParams.push("%" + term + "%");
+    });
   }
   // Lấy tổng số lượng bản ghi
   const totalCountSql = `SELECT COUNT(*) as totalCount FROM iot_exam.history WHERE 1=1 ${sqlCondition}`;
@@ -77,4 +95,28 @@ module.exports.UpdateAHistory = async (obj) => {
     [obj.device, obj.action, obj.id]
   );
   return affectedRows;
+};
+
+module.exports.sortHistoryHighToLow = async (obj) => {
+  // Lấy tổng số lượng bản ghi
+  const totalCountSql = `SELECT COUNT(*) as totalCount FROM iot_exam.history WHERE 1=1`;
+  const [totalCountResult] = await db.query(totalCountSql);
+  const totalCount = totalCountResult[0].totalCount;
+  // Lấy dữ liệu
+  const offset = (obj.page - 1) * obj.pageSize;
+  const sql = `SELECT * FROM iot_exam.history ORDER BY ${obj.fieldName} DESC LIMIT ? OFFSET ?`;
+  const [data] = await db.query(sql, [obj.pageSize, offset]);
+  return { data, totalCount };
+};
+
+module.exports.sortHistoryLowToHigh = async (obj) => {
+  // Lấy tổng số lượng bản ghi
+  const totalCountSql = `SELECT COUNT(*) as totalCount FROM iot_exam.history WHERE 1=1`;
+  const [totalCountResult] = await db.query(totalCountSql);
+  const totalCount = totalCountResult[0].totalCount;
+  // Lấy dữ liệu
+  const offset = (obj.page - 1) * obj.pageSize;
+  const sql = `SELECT * FROM iot_exam.history ORDER BY ${obj.fieldName} ASC LIMIT ? OFFSET ?`;
+  const [data] = await db.query(sql, [obj.pageSize, offset]);
+  return { data, totalCount };
 };

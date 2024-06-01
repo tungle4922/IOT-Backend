@@ -37,4 +37,14 @@ router.put("/", async (req, res) => {
   res.status(201).send("Updated successfully.");
 });
 
+router.post("/sort/highToLow", async (req, res) => {
+  const data = await service.sortHistoryHighToLow(req.body);
+  res.send(data);
+});
+
+router.post("/sort/lowToHigh", async (req, res) => {
+  const data = await service.sortHistoryLowToHigh(req.body);
+  res.send(data);
+});
+
 module.exports = router;
